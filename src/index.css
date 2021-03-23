@@ -102,10 +102,6 @@ body{
     font-size:1.4vw;
     margin:3px;    
 }
-#isRequired{
-    color:"red";
-    font-size:"1.2vw";
-}
 #QuestionDescription{
     font-size:.8vw;
     margin:2px;
