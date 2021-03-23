@@ -1,6 +1,8 @@
 import { Question } from "../AtomicComponent/QuestionAndDescription";
-
+import {useDispatch} from "react-redux";
 export function LongAnswer(props){
+
+    var dispatch=useDispatch();
 
     function setValueAndIsRequired(event){
 
@@ -24,7 +26,7 @@ export function LongAnswer(props){
         textArea.style.height="0px";
         var height=textArea.scrollHeight;
         textArea.style.height=height+"px";
-        props.handler(event.target.value);
+        dispatch(props.handler(event.target.value));
     }
     function checkIsRequired(event){
 

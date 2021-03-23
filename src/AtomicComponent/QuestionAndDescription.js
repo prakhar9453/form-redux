@@ -1,7 +1,5 @@
 export function Question(props){
 
-    console.log(props);
-
     return(
         <div id="QuestionandDescriptionContainer">
            <p  id="Question">{props.question}

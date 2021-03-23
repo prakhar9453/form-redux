@@ -1,13 +1,15 @@
-import {useState} from "react";
 import {Question} from "../AtomicComponent/QuestionAndDescription"
+import {useDispatch, useSelector} from "react-redux";
 export function MultipleCorrect(props){
 
-    var [selected,setSelected]=useState(-1);
+    var selected=props.holder.selected;
+    var selectedOption=props.holder.selectedOption;
+    const dispatch=useDispatch();
+
     var selectedOptions=new Array(props.options.length);
     selectedOptions.fill(false);
-    
-    var [selectedOption,setSelectedOption]=useState(selectedOptions);
-
+    if(selectedOption.length===0)
+        selectedOption=selectedOptions;
 
     function changeOption(event){
 
@@ -23,10 +25,10 @@ export function MultipleCorrect(props){
                 parent=event.target.parentNode;
                 parent.style.border="2px solid red";
             }
-           select.fill(false);
-           setSelectedOption(selectedOptions);
-           setSelected(-1);
-           props.handler(ans);
+           selectedOptions.fill(false);
+           dispatch(props.handler.setSelectedOption(selectedOptions));
+           dispatch(props.handler.setSelected(-1));
+           dispatch(props.handler.setValue(ans));
            return;
         }
 
@@ -35,15 +37,15 @@ export function MultipleCorrect(props){
             
            select=[...selectedOption];
            select[index]=false;
-           setSelectedOption(select);
-           setSelected(selected-1);
+           dispatch(props.handler.setSelectedOption(select));
+           dispatch(props.handler.setSelected(selected-1));
         }
         else
         {
             select=[...selectedOption];
             select[index]=true;
-            setSelectedOption(select);
-            setSelected(selected+1); 
+            dispatch(props.handler.setSelectedOption(select));
+            dispatch(props.handler.setSelected(selected+1));
         }
         
         for(var i=0;i<props.options.length;i++)
@@ -69,7 +71,7 @@ export function MultipleCorrect(props){
                 parent.parentNode.style.border="1.5px solid black";
             }
         }
-        props.handler(ans);
+        dispatch(props.handler.setValue(ans));
 
 
     }
@@ -81,7 +83,7 @@ export function MultipleCorrect(props){
             {props.options.map((x,i)=>{
                 return(
                     <div key={i} style={{display:"flex",padding:"10px",alignItems:"center"}}>
-                        <input id={i} type="checkbox" onChange={changeOption} checked={selectedOption[i]}></input>
+                        <input id={i} type="checkbox" onChange={changeOption} checked={selectedOption[i]?selectedOption[i]:false}></input>
                         <label style={{fontSize:"1.2vw"}}>{x}</label>
                     </div>
                 );

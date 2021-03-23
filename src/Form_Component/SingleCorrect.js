@@ -1,13 +1,15 @@
-import {useState} from "react";
 import { Question } from "../AtomicComponent/QuestionAndDescription";
+import {useDispatch, useSelector} from "react-redux";
 export function SingleCorrect(props){
 
-    var [selected,setSelected]=useState(-1);
+
+    const dispatch=useDispatch();
+    var selected=props.holder.selected;
+    var selectedOption=props.holder.selectedOption;
+
     var selectedOptions=new Array(props.options.length);
     selectedOptions.fill(false);
     
-    var [selectedOption,setSelectedOption]=useState(selectedOptions);
-
 
     function changeOption(event){
 
@@ -22,9 +24,9 @@ export function SingleCorrect(props){
                 parent.style.border="2px solid red";
             }
            selectedOptions.fill(false);
-           setSelectedOption(selectedOptions);
-           setSelected(-1);
-           props.handler("");
+           dispatch(props.handler.setSelectedOption(selectedOptions));
+           dispatch(props.handler.setSelected(-1));
+           dispatch(props.handler.setValue(""));
            return;
         }
 
@@ -37,9 +39,9 @@ export function SingleCorrect(props){
                 parent.parentNode.style.border="2px solid red";
             }
            selectedOptions.fill(false);
-           setSelectedOption(selectedOptions);
-           setSelected(-1);
-           props.handler("");
+           dispatch(props.handler.setSelectedOption(selectedOptions));
+           dispatch(props.handler.setSelected(-1));
+           dispatch(props.handler.setValue(""));
         }
         else
         {
@@ -49,10 +51,11 @@ export function SingleCorrect(props){
                 parent=event.target.parentNode;
                 parent.parentNode.style.border="1.5px solid black";
             }
-            selectedOption.fill(false);
-            selectedOption[index]=true;
-            setSelected(index);
-            props.handler(props.options[index]);
+            selectedOptions.fill(false);
+            selectedOptions[index]=true;        
+            dispatch(props.handler.setSelectedOption(selectedOptions));
+            dispatch(props.handler.setSelected(index));
+            dispatch(props.handler.setValue(props.options[index]));
         }
 
     }
@@ -65,7 +68,7 @@ export function SingleCorrect(props){
             {props.options.map((x,i)=>{
                 return(
                     <div key={i} style={{display:"flex",padding:"10px",alignItems:"center"}}>
-                        <input id={i} type="checkbox" onChange={changeOption} checked={selectedOption[i]}></input>
+                        <input id={i} type="checkbox" onChange={changeOption} checked={selectedOption[i]?selectedOption[i]:false}></input>
                         <label style={{fontSize:"1.2vw"}}>{x}</label>
                     </div>
                 );

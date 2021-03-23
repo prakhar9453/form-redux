@@ -1,6 +1,8 @@
 import {Question} from  "../AtomicComponent/QuestionAndDescription";
+import {useDispatch} from "react-redux";
 export function ShortAnswer(props){
 
+    var dispatch=useDispatch();
     function setValueAndIsRequired(event){
 
         if(props.required==="1"){
@@ -18,8 +20,14 @@ export function ShortAnswer(props){
                 parent.style.border="1.5px solid black";
             }   
         }
-
-        props.handler(event.target.value);
+        if(event.target.parentNode.parentNode.id==="phone" || event.target.parentNode.parentNode.id==="email")
+        {
+            props.handler(event.target.value);
+        }
+        else
+        {
+        dispatch(props.handler(event.target.value));
+        }
     }
     function checkIsRequired(event){
 

@@ -1,39 +1,48 @@
 import {FormHeader} from "./Form_Component/FormHeader.js"
 import {FormDetails} from "./Form_Component/FormDetails.js"
 import { SingleCorrect } from "./Form_Component/SingleCorrect.js";
-import {useState} from "react";
 import { MultipleCorrect } from "./Form_Component/MultipleCorrect.js";
 import { ShortAnswer } from "./Form_Component/ShortAnswer.js";
 import { LongAnswer } from "./Form_Component/LongAnswer.js";
 import { Submit } from "./Form_Component/Submit.js";
 import { SubHeader } from "./Form_Component/SubHeader.js";
+import {useDispatch, useSelector} from "react-redux";
+import {setPhone,setCustomer,setSelectedCustomer,setSelectedOptionCustomer,setOrderNo,setColor,setSelectedColor,setSelectedOptionColor,setProductDetail,setName,setValidPhone,setValidEmail, setEmail,setContact,setSelectedContact,setSelectedOptionContact,setQuestion} from "./Store/Actions/AppAction.js";
 
 export function App(){
 
-    var customerType=["I am a new customer","I am an exsisting customer"];
-    var [customer,setCustomer]=useState("");
+    const app=useSelector((state)=>state.App);
+    const dispatch=useDispatch();
 
-    var [orderNo,setOrderNo]=useState("");
+    console.log(app.customer);
+    console.log(app.selectedCustomer);
+    console.log(app.selectedCustomerOption);
+
+    var customerType=["I am a new customer","I am an exsisting customer"];
+    var customer=app.customer;
+
+    var orderNo=app.orderNo;
 
     var colorType=["Red","Blue","Yellow","Green"];
-    var [color,setColor]=useState([]);
+    var color=app.color;
 
-    var [ProductDetail,setProductDetail]=useState("");
+    var ProductDetail=app.ProductDetail;
 
-    var [name,setName]=useState("");
+    var name=app.name;
 
-    var [phone,setPhone]=useState("");
-    var [validPhone,setValidPhone]=useState(true);
+    var phone=app.phone;
+
+    var validPhone=app.validPhone;
     function ValidateandSetPhone(phone){
 
         var element,firstChild;
-        setPhone(phone);
+        dispatch(setPhone(phone));
         var re = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
         var result=re.test(phone);
         if(phone!=="")
-        setValidPhone(result);
+        dispatch(setValidPhone(result));
         else
-        setValidPhone(true);
+        dispatch(setValidPhone(result));
 
         if(result)
         {
@@ -51,8 +60,8 @@ export function App(){
         }
     }
 
-    var [email,setEmail]=useState("");
-    var [validEmail,setValidEmail]=useState(true);
+    var email=app.email;
+    var validEmail=app.validEmail;
 
     function ValidateandSetEmail(email){
 
@@ -84,9 +93,9 @@ export function App(){
     }
 
     var contactType=["E-Mail","Mobile"];
-    var [contact,setContact]=useState([]);
+    var contact=app.contact;
 
-    var [question,setQuestion]=useState("");
+    var question=app.question;
 
     function validation(event){
         
@@ -153,13 +162,13 @@ export function App(){
             <FormDetails name="Order Details" details="After you fill out this order request, we will contact you to go over details and availability before the order is completed. If you would like faster service and direct information on current stock and pricing please contact us at Contact us at (123) 456-7890 or " email="no_reply@example.com"/>
         </div>
         <div id="customerType">
-            <SingleCorrect question="Are you a new or existing customer?" options={customerType} handler={setCustomer}/>
+            <SingleCorrect question="Are you a new or existing customer?" options={customerType} handler={{setValue:setCustomer,setSelected:setSelectedCustomer,setSelectedOption:setSelectedOptionCustomer}} app={app} holder={{selected:app.selectedCustomer,selectedOption:app.selectedCustomerOption}}/>
         </div>
         <div id="orderNo">
             <ShortAnswer question="What is the item you would like to order?" required="1" isDespcription="1" description=" Please enter the order no." handler={setOrderNo}/>
         </div>
         <div id="color">
-            <MultipleCorrect question="What color(s) would you like to order?" options={colorType} handler={setColor} required="1"/>
+            <MultipleCorrect question="What color(s) would you like to order?" options={colorType} handler={{setValue:setColor,setSelected:setSelectedColor,setSelectedOption:setSelectedOptionColor}} required="1" holder={{selected:app.selectedColor,selectedOption:app.selectedColorOption}}/>
         </div>
         <div id="product">
             <LongAnswer question="Product options" handler={setProductDetail} value={ProductDetail} isDespcription="1" description="Choose size and number per color"/>
@@ -177,7 +186,7 @@ export function App(){
             <ShortAnswer question="Enter your Email?"  handler={ValidateandSetEmail} value={email} validEmail={validEmail} />
         </div>
         <div id="contactType">
-            <MultipleCorrect question="Preferred contact method ?" options={contactType} handler={setContact} required="1"/>
+            <MultipleCorrect question="Preferred contact method ?" options={contactType} handler={{setValue:setContact,setSelected:setSelectedContact,setSelectedOption:setSelectedOptionContact}} holder={{selected:app.selectedContact,selectedOption:app.selectedContactOption}}required="1"/>
         </div>
         <div id="question">
             <LongAnswer question="Questions and Comment" handler={setQuestion} value={question}/>
